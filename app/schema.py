@@ -1,6 +1,5 @@
-from pydantic.v1 import Field
-from sqlmodel import SQLModel
-from typing import List
+from sqlmodel import SQLModel, Field
+from typing import Optional, List
 
 
 class InventoryItemCreate(SQLModel):
@@ -33,7 +32,7 @@ class OrderResponse(SQLModel):
 
 
 class OrderWithItem(OrderResponse):
-    item: Optional[InventoryItemResponse]    
+    item: Optional[InventoryItemResponse] = None
 
 
 class OwnerCreate(SQLModel):
@@ -42,19 +41,15 @@ class OwnerCreate(SQLModel):
     password: str
 
 
-class OwnerResponse(OwnerCreate):
+class OwnerResponse(SQLModel):  
     id: int
     name: str
     email: str
 
 
 class OwnerWithDetails(OwnerResponse):
-    # items: List["InventoryItemResponse"] = []
-    # orders: List["OrderResponse"] = []
-    items: Optional[List[InventoryItemResponse]] = Field(default_factory=list)
-    orders: Optional[List[OrderResponse]] = Field(default_factory=list)
-    # items: List[InventoryItemResponse] = Field(default_factory=list)
-    # orders: List[OrderResponse] = Field(default_factory=list)
+    items: List[InventoryItemResponse] = Field(default_factory=list)
+    orders: List[OrderResponse] = Field(default_factory=list)
 
 
 class OwnerLogin(SQLModel):
@@ -65,9 +60,9 @@ class OwnerLogin(SQLModel):
 class PasswordUpdate(SQLModel):
     old_password: str
     new_password: str
-    confirm_password: str    
+    confirm_password: str
 
 
-class token(SQLModel):
+class Token(SQLModel):
     access_token: str
     token_type: str

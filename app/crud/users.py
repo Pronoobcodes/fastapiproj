@@ -11,7 +11,7 @@ from app.schema import OwnerCreate, OwnerLogin, PasswordUpdate
 from app.security import hash_password, verify_password, create_access_token, SECRET_KEY, ALGORITHM
 
 SessionDep = Annotated[Session, Depends(get_session)]
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/manager/login")
 
 
 def create_owner(owner_data: OwnerCreate, session: SessionDep):
@@ -65,7 +65,7 @@ def get_current_owner(session: SessionDep, token: str = Depends(oauth2_scheme)):
 
 
 def show_owner(current_owner: Owner, session: SessionDep):
-    owner = session.exec(select(Owner).where(Owner.id == current_owner.id).options(selectinload(Owner.items),selectinload(Owner.orders))).first()
+    owner = session.exec(select(Owner).where(Owner.id == current_owner.id).options(selectinload(Owner.items), selectinload(Owner.orders))).first()
     return owner
 
 
@@ -91,6 +91,4 @@ def update_password(data: PasswordUpdate, current_owner: Owner, session: Session
 
     session.commit()
 
-    return {"message": "Password updated successfully"}    
-
-
+    return {"message": "Password updated successfully"}
