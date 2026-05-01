@@ -7,7 +7,7 @@ from fastapi.security import OAuth2PasswordBearer
 
 from database.database import get_session
 from app.models import Owner
-from app.schema import OwnerCreate, OwnerLogin, PasswordUpdate 
+from app.schema import OwnerCreate, OwnerUpdate, OwnerLogin, PasswordUpdate 
 from app.security import hash_password, verify_password, create_access_token, SECRET_KEY, ALGORITHM
 
 SessionDep = Annotated[Session, Depends(get_session)]
@@ -69,7 +69,7 @@ def show_owner(current_owner: Owner, session: SessionDep):
     return owner
 
 
-def update_owner(owner_data: OwnerCreate, current_owner: Owner, session: SessionDep):
+def update_owner(owner_data: OwnerUpdate, current_owner: Owner, session: SessionDep):
     current_owner.name = owner_data.name
     current_owner.email = owner_data.email
 

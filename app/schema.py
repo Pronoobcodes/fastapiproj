@@ -30,8 +30,6 @@ class OrderResponse(SQLModel):
     quantity: int
     total_price: float
 
-
-class OrderWithItem(OrderResponse):
     item: Optional[InventoryItemResponse] = None
 
 
@@ -39,6 +37,11 @@ class OwnerCreate(SQLModel):
     name: str
     email: str
     password: str
+
+
+class OwnerUpdate(SQLModel):
+    name: str
+    email: str
 
 
 class OwnerResponse(SQLModel):  
