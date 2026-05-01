@@ -9,6 +9,13 @@ class InventoryItemCreate(SQLModel):
     price: float
 
 
+class InventoryItemUpdate(SQLModel):
+    name: Optional[str] = None
+    description: Optional[str] = None
+    quantity: Optional[int] = None
+    price: Optional[float] = None
+
+
 class InventoryItemResponse(SQLModel):
     id: int
     name: str

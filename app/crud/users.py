@@ -42,8 +42,7 @@ def login_owner(owner_login: OwnerLogin, session: SessionDep):
     if not owner or not verify_password(owner_login.password, owner.password):
         raise HTTPException(401, "Invalid credentials")
 
-    token = create_access_token({"sub": owner.email})
-
+    token = create_access_token({"sub": str(owner.id)})
     return {"access_token": token, "token_type": "bearer"}
     
 
@@ -52,11 +51,11 @@ def get_current_owner(session: SessionDep, token: str = Depends(oauth2_scheme)):
 
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        email = payload.get("sub")
-    except JWTError:
+        owner_id = int(payload.get("sub"))
+    except (JWTError, TypeError, ValueError):
         raise credentials_exception
 
-    owner = session.exec(select(Owner).where(Owner.email == email)).first()
+    owner = session.exec(select(Owner).where(Owner.id == owner_id)).first()
 
     if not owner:
         raise credentials_exception

@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, status
 from sqlmodel import Session
 from typing import Annotated
 
-from app.schema import InventoryItemResponse, OrderResponse, InventoryItemCreate, OrderCreate
+from app.schema import InventoryItemResponse, OrderResponse, InventoryItemCreate, InventoryItemUpdate, OrderCreate
 from app.models import Owner
 from app.crud.store import create_inventory, show_inventory, update_inventory, delete_inventory, create_order, show_order, update_order, delete_order
 from app.crud.users import get_current_owner
@@ -26,8 +26,8 @@ def show_inventory_route(session: SessionDep, current_owner: OwnerDep):
 
 
 @store_router.put("/{item_id}", response_model=InventoryItemResponse)
-def update_inventory_route(item_id: int, session: SessionDep, current_owner: OwnerDep):
-    return update_inventory(item_id, session, current_owner)
+def update_inventory_route(item_data: InventoryItemUpdate,item_id: int, session: SessionDep, current_owner: OwnerDep):
+    return update_inventory(item_data, item_id, session, current_owner)
 
 
 @store_router.delete("/{item_id}", response_model=InventoryItemResponse)
