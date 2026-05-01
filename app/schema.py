@@ -51,8 +51,10 @@ class OwnerResponse(OwnerCreate):
 class OwnerWithDetails(OwnerResponse):
     # items: List["InventoryItemResponse"] = []
     # orders: List["OrderResponse"] = []
-    items: List[InventoryItemResponse] = Field(default_factory=list)
-    orders: List[OrderResponse] = Field(default_factory=list)
+    items: Optional[List[InventoryItemResponse]] = Field(default_factory=list)
+    orders: Optional[List[OrderResponse]] = Field(default_factory=list)
+    # items: List[InventoryItemResponse] = Field(default_factory=list)
+    # orders: List[OrderResponse] = Field(default_factory=list)
 
 
 class OwnerLogin(SQLModel):
