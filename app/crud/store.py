@@ -41,10 +41,9 @@ def update_inventory(item_data: InventoryItemUpdate, item_id: int, current_owner
     if item.owner_id != current_owner.id:
         raise HTTPException(403, "Not your item")
 
-    item.name = item_data.name
-    item.description = item_data.description
-    item.quantity = item_data.quantity
-    item.price = item_data.price
+    update_data = item_data.model_dump(exclude_unset=True)
+    for key, value in update_data.items():
+        setattr(item, key, value)
 
     session.commit()
     session.refresh(item)
@@ -62,12 +61,16 @@ def delete_inventory(item_id: int, session: SessionDep, current_owner: Owner):
     return {"message": "Item deleted successfully"}
 
       
-def create_order(order: OrderCreate, session: SessionDep, current_owner: Owner):
+def create_order(order_data: OrderCreate, session: SessionDep, current_owner: Owner):
+    item = session.get(InventoryItem, order_data.item_id)
+    if not item:
+        raise HTTPException(404, "Item not found")
+
     order = Order(
-        item_id=order.item_id,
+        item_id=order_data.item_id,
         owner_id=current_owner.id,
-        quantity=order.quantity,
-        total_price=order.quantity * session.exec(select(InventoryItem).where(InventoryItem.id == order.item_id)).first().price
+        quantity=order_data.quantity,
+        total_price=order_data.quantity * item.price
     )
     session.add(order)
     session.commit()
@@ -80,14 +83,21 @@ def show_order(session: SessionDep, current_owner: Owner):
     return order
 
 
-def update_order(order_id: int, session: SessionDep, current_owner: Owner):
-    order = session.exec(select(Order).where(Order.id == order_id)).first()
+def update_order(order_data: OrderCreate, order_id: int, current_owner: Owner, session: Session):
+    order = session.get(Order, order_id)
     if not order:
         raise HTTPException(404, "Order not found")
-    order.item_id = order_id.item_id
-    order.owner_id = current_owner.id
-    order.quantity = order_id.quantity
-    order.total_price = order_id.quantity * session.exec(select(InventoryItem).where(InventoryItem.id == order.item_id)).first().price
+    if order.owner_id != current_owner.id:
+        raise HTTPException(403, "Not your order")
+
+    item = session.get(InventoryItem, order_data.item_id)
+    if not item:
+        raise HTTPException(404, "Item not found")
+
+    order.item_id = order_data.item_id
+    order.quantity = order_data.quantity
+    order.total_price = order_data.quantity * item.price
+
     session.commit()
     session.refresh(order)
     return order    

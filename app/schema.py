@@ -47,8 +47,8 @@ class OwnerCreate(SQLModel):
 
 
 class OwnerUpdate(SQLModel):
-    name: str
-    email: str
+    name: Optional[str] = None
+    email: Optional[str] = None
 
 
 class OwnerResponse(SQLModel):  

@@ -69,8 +69,9 @@ def show_owner(current_owner: Owner, session: SessionDep):
 
 
 def update_owner(owner_data: OwnerUpdate, current_owner: Owner, session: SessionDep):
-    current_owner.name = owner_data.name
-    current_owner.email = owner_data.email
+    update_data = owner_data.model_dump(exclude_unset=True)
+    for key, value in update_data.items():
+        setattr(current_owner, key, value)
 
     session.commit()
     session.refresh(current_owner)

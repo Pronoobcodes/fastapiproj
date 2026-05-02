@@ -20,36 +20,36 @@ def create_inventory_route(item: InventoryItemCreate, session: SessionDep, curre
     return create_inventory(item, session, current_owner)
 
 
-@store_router.get("/", response_model=list[InventoryItemResponse])
+@store_router.get("/", response_model=list[InventoryItemResponse], status_code=status.HTTP_200_OK)
 def show_inventory_route(session: SessionDep, current_owner: OwnerDep):
     return show_inventory(session, current_owner)
 
 
-@store_router.put("/{item_id}", response_model=InventoryItemResponse)
-def update_inventory_route(item_data: InventoryItemUpdate,item_id: int, session: SessionDep, current_owner: OwnerDep):
-    return update_inventory(item_data, item_id, session, current_owner)
+@store_router.put("/{item_id}", response_model=InventoryItemResponse, status_code=status.HTTP_200_OK)
+def update_inventory_route(item_data: InventoryItemUpdate,item_id: int, current_owner: OwnerDep, session: SessionDep):
+    return update_inventory(item_data, item_id, current_owner, session)
 
 
-@store_router.delete("/{item_id}", response_model=InventoryItemResponse)
+@store_router.delete("/{item_id}", status_code=status.HTTP_200_OK)
 def delete_inventory_route(item_id: int, session: SessionDep, current_owner: OwnerDep):
     return delete_inventory(item_id, session, current_owner)
 
 
 @store_router.post("/order", response_model=OrderResponse, status_code=status.HTTP_201_CREATED)
-def create_order_route(order: OrderCreate, session: SessionDep, current_owner: OwnerDep):
-    return create_order(order, session, current_owner)
+def create_order_route(order_data: OrderCreate, session: SessionDep, current_owner: OwnerDep):
+    return create_order(order_data, session, current_owner)
 
 
-@store_router.get("/order", response_model=list[OrderResponse])
+@store_router.get("/order", response_model=list[OrderResponse], status_code=status.HTTP_200_OK)
 def show_order_route(session: SessionDep, current_owner: OwnerDep):
     return show_order(session, current_owner)
 
 
-@store_router.put("/order/{order_id}", response_model=OrderResponse)
-def update_order_route(order_id: int, session: SessionDep, current_owner: OwnerDep):
-    return update_order(order_id, session, current_owner)
+@store_router.put("/order/{order_id}", response_model=OrderResponse, status_code=status.HTTP_200_OK)
+def update_order_route(order_data: OrderCreate, order_id: int, current_owner: OwnerDep, session: SessionDep):
+    return update_order(order_data, order_id, current_owner, session)
 
 
-@store_router.delete("/order/{order_id}", response_model=OrderResponse)
+@store_router.delete("/order/{order_id}", status_code=status.HTTP_200_OK)
 def delete_order_route(order_id: int, session: SessionDep, current_owner: OwnerDep):
     return delete_order(order_id, session, current_owner)
